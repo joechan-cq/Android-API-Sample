@@ -3,4 +3,9 @@
 该项目中包含一些不常用但很好用的android-api的使用示例代码。  
 
 1. DiffUtilSample——使用DiffUtil高效更新RecyclerView。
+
 2. MediaSessionCompatSample——使用MediaSessionCompat框架播放音乐。
+
+3. BottomSheetSample——Design包中bottomSheet的应用，代码来源[Android-Bottom-Sheets](https://github.com/tutsplus/Android-BottomSheets)。
+
+   ​
