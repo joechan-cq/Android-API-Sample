@@ -8,4 +8,6 @@
 
 3. BottomSheetSample——Design包中bottomSheet的应用，代码来源[Android-Bottom-Sheets](https://github.com/tutsplus/Android-BottomSheets)。
 
+4. MediaMetadataRetriverSample——使用MediaMetadataRetriver读取媒体文件信息。
+
    ​
