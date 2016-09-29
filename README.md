@@ -10,4 +10,4 @@
 
 4. MediaMetadataRetriverSample——使用MediaMetadataRetriver读取媒体文件信息。
 
-   ​
+5. LinearSnapHelperSample——使RecyclerView滑动和ViewPager类似。
