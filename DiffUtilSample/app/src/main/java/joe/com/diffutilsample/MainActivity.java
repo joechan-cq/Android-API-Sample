@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //用下面注视的语句更新，就会发现onBindViewHolder中的list长度是2了。原因就是在界面刷新前，对同一个数据项，快速更新了多次导致的。
+//                adapter.notifyItemChanged(5, "first change");
+//                adapter.notifyItemChanged(5, "second change");
+//                return;
                 final ArrayList<Person> newList = new ArrayList<>();
                 for (int i = 1; i < 5; i++) {
                     newList.add(new Person(i, String.valueOf(i)));
@@ -92,10 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position, List<Object> payloads) {
-            if (payloads == null || payloads.isEmpty()) {
+            Log.d("MyAdapter", "onBindViewHolder: id=" + persons.get(position).getId() + "  paySize=" + payloads.size());
+            if (payloads.isEmpty()) {
                 super.onBindViewHolder(holder, position, payloads);
             } else {
-                persons.get(position).setName((String) payloads.get(0));
+                holder.setName((String) payloads.get(payloads.size() - 1));
             }
         }
 
