@@ -1,5 +1,6 @@
 package joe.com.mediasessioncompatsample;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,10 +11,12 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -24,15 +27,22 @@ import java.io.IOException;
  */
 
 public class MusicService extends Service {
+    private static final String ACTION_PRE = "play_pre";
+    private static final String ACTION_NEXT = "play_next";
+    private static final String ACTION_PLAY = "play";
+    private static final String ACTION_PAUSE = "pause";
+
     private MediaPlayer mediaPlayer;
     private MusicBinder binder = new MusicBinder();
-
     private MediaSessionCompat mediaSessionCompat;
     private String[] mp3s = new String[]{"http://yinyueshiting.baidu.com/data2/music/49d23c00a69f913ff41bbf0f4ef9af44/261813937/261813937.mp3?xcode=3c8806142c92ccd68e84979b09d702df",
             "http://yinyueshiting.baidu.com/data2/music/a91a082fa3b5f11553c4343002ff54b7/269187740/269187740.mp3?xcode=3c8806142c92ccd68e84979b09d702df",
             "http://yinyueshiting.baidu.com/data2/music/4708c0bda6938501e19d89b186573f13/268028134/268028134.mp3?xcode=3c8806142c92ccd68e84979b09d702df"};
 
     private int index = 0;
+
+
+    private NotificationManagerCompat notificationManagerCompat;
 
     @Override
     public void onCreate() {
@@ -47,6 +57,34 @@ public class MusicService extends Service {
         PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f).build();
         mediaSessionCompat.setPlaybackState(playbackStateCompat);
         initMediaPlayer();
+
+        showNotification(false);
+    }
+
+    private void showNotification(boolean isPlaying) {
+        notificationManagerCompat = NotificationManagerCompat.from(this);
+        android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Track title")
+                .setContentText("Artist - Album");
+        NotificationCompat.MediaStyle mediaStyle = new NotificationCompat.MediaStyle(builder);
+        mediaStyle.setMediaSession(mediaSessionCompat.getSessionToken());
+        mediaStyle.setShowActionsInCompactView(0, 1, 2);
+        builder.addAction(getAction(android.R.drawable.ic_media_previous, "pre", ACTION_PRE));
+        if (isPlaying) {
+            builder.addAction(getAction(android.R.drawable.ic_media_pause, "pause", ACTION_PAUSE));
+        } else {
+            builder.addAction(getAction(android.R.drawable.ic_media_play, "play", ACTION_PLAY));
+        }
+        builder.addAction(getAction(android.R.drawable.ic_media_next, "next", ACTION_NEXT));
+        notificationManagerCompat.notify(0xaa, builder.build());
+    }
+
+    private android.support.v4.app.NotificationCompat.Action getAction(int ic_media_previous, String title, String actionPre) {
+        Intent intent = new Intent(getApplicationContext(), MusicService.class);
+        intent.setAction(actionPre);
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0xaa, intent, 0);
+        return new android.support.v4.app.NotificationCompat.Action.Builder(ic_media_previous, title, pendingIntent).build();
     }
 
     @Nullable
@@ -56,10 +94,25 @@ public class MusicService extends Service {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent.getAction().equals(ACTION_PRE)) {
+            callback.onSkipToPrevious();
+        } else if (intent.getAction().equals(ACTION_NEXT)) {
+            callback.onSkipToNext();
+        } else if (intent.getAction().equals(ACTION_PLAY)) {
+            callback.onPlay();
+        } else if (intent.getAction().equals(ACTION_PAUSE)) {
+            callback.onPause();
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         release();
         mediaSessionCompat.release();
+        notificationManagerCompat.cancel(0xaa);
     }
 
     private void initMediaPlayer() {
@@ -112,6 +165,7 @@ public class MusicService extends Service {
                     }
                 }
             }).start();
+            showNotification(true);
         }
     }
 
@@ -120,6 +174,7 @@ public class MusicService extends Service {
             mediaPlayer.start();
             PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f).build();
             mediaSessionCompat.setPlaybackState(playbackStateCompat);
+            showNotification(true);
         }
     }
 
@@ -128,6 +183,7 @@ public class MusicService extends Service {
             mediaPlayer.pause();
             PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PAUSED, mediaPlayer.getCurrentPosition(), 1.0f).build();
             mediaSessionCompat.setPlaybackState(playbackStateCompat);
+            showNotification(false);
         }
     }
 
@@ -136,6 +192,7 @@ public class MusicService extends Service {
             mediaPlayer.stop();
             PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f).build();
             mediaSessionCompat.setPlaybackState(playbackStateCompat);
+            showNotification(false);
         }
     }
 
