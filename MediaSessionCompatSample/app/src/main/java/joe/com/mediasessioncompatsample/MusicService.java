@@ -18,6 +18,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import java.io.IOException;
 
@@ -47,7 +48,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ComponentName mediaButtonReceiver = new ComponentName(this, MediaButtonReceiver.class);
+        ComponentName mediaButtonReceiver = new ComponentName(getApplicationContext(), MediaButtonReceiver.class);
         mediaSessionCompat = new MediaSessionCompat(this, getClass().getName(), mediaButtonReceiver, null);
         mediaSessionCompat.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
@@ -59,32 +60,6 @@ public class MusicService extends Service {
         initMediaPlayer();
 
         showNotification(false);
-    }
-
-    private void showNotification(boolean isPlaying) {
-        notificationManagerCompat = NotificationManagerCompat.from(this);
-        android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Track title")
-                .setContentText("Artist - Album");
-        NotificationCompat.MediaStyle mediaStyle = new NotificationCompat.MediaStyle(builder);
-        mediaStyle.setMediaSession(mediaSessionCompat.getSessionToken());
-        mediaStyle.setShowActionsInCompactView(0, 1, 2);
-        builder.addAction(getAction(android.R.drawable.ic_media_previous, "pre", ACTION_PRE));
-        if (isPlaying) {
-            builder.addAction(getAction(android.R.drawable.ic_media_pause, "pause", ACTION_PAUSE));
-        } else {
-            builder.addAction(getAction(android.R.drawable.ic_media_play, "play", ACTION_PLAY));
-        }
-        builder.addAction(getAction(android.R.drawable.ic_media_next, "next", ACTION_NEXT));
-        notificationManagerCompat.notify(0xaa, builder.build());
-    }
-
-    private android.support.v4.app.NotificationCompat.Action getAction(int ic_media_previous, String title, String actionPre) {
-        Intent intent = new Intent(getApplicationContext(), MusicService.class);
-        intent.setAction(actionPre);
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0xaa, intent, 0);
-        return new android.support.v4.app.NotificationCompat.Action.Builder(ic_media_previous, title, pendingIntent).build();
     }
 
     @Nullable
@@ -149,6 +124,32 @@ public class MusicService extends Service {
                 }
             });
         }
+    }
+
+    private void showNotification(boolean isPlaying) {
+        notificationManagerCompat = NotificationManagerCompat.from(this);
+        android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Track title")
+                .setContentText("Artist - Album");
+        NotificationCompat.MediaStyle mediaStyle = new NotificationCompat.MediaStyle(builder);
+        mediaStyle.setMediaSession(mediaSessionCompat.getSessionToken());
+        mediaStyle.setShowActionsInCompactView(0, 1, 2);
+        builder.addAction(getAction(android.R.drawable.ic_media_previous, "pre", ACTION_PRE));
+        if (isPlaying) {
+            builder.addAction(getAction(android.R.drawable.ic_media_pause, "pause", ACTION_PAUSE));
+        } else {
+            builder.addAction(getAction(android.R.drawable.ic_media_play, "play", ACTION_PLAY));
+        }
+        builder.addAction(getAction(android.R.drawable.ic_media_next, "next", ACTION_NEXT));
+        notificationManagerCompat.notify(0xaa, builder.build());
+    }
+
+    private android.support.v4.app.NotificationCompat.Action getAction(int ic_media_previous, String title, String actionPre) {
+        Intent intent = new Intent(getApplicationContext(), MusicService.class);
+        intent.setAction(actionPre);
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0xaa, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new android.support.v4.app.NotificationCompat.Action.Builder(ic_media_previous, title, pendingIntent).build();
     }
 
     private void play() {
@@ -219,7 +220,44 @@ public class MusicService extends Service {
     private MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
         public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
-            return super.onMediaButtonEvent(mediaButtonEvent);
+            if (mediaSessionCompat != null && Intent.ACTION_MEDIA_BUTTON.equals(mediaButtonEvent.getAction())) {
+                KeyEvent ke = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                if (ke != null && ke.getAction() == KeyEvent.ACTION_UP) {
+                    int state = mediaSessionCompat.getController().getPlaybackState().getState();
+                    switch (ke.getKeyCode()) {
+                        case KeyEvent.KEYCODE_MEDIA_PLAY:
+                            if (state != PlaybackStateCompat.STATE_PLAYING) {
+                                onPlay();
+                                return true;
+                            }
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                            if (state == PlaybackStateCompat.STATE_PLAYING) {
+                                onPause();
+                                return true;
+                            }
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_NEXT:
+                            onSkipToNext();
+                            return true;
+                        case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                            onSkipToPrevious();
+                            return true;
+                        case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                        case KeyEvent.KEYCODE_HEADSETHOOK:
+                            if (state == PlaybackStateCompat.STATE_PLAYING) {
+                                onPause();
+                                return true;
+                            } else {
+                                onPlay();
+                                return true;
+                            }
+                    }
+                }
+                return super.onMediaButtonEvent(mediaButtonEvent);
+            } else {
+                return super.onMediaButtonEvent(mediaButtonEvent);
+            }
         }
 
         @Override
