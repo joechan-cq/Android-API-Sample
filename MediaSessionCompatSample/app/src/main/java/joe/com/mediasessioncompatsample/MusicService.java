@@ -173,7 +173,7 @@ public class MusicService extends Service {
     private void resume() {
         if (mediaPlayer != null) {
             mediaPlayer.start();
-            PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f).build();
+            PlaybackStateCompat playbackStateCompat = new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, mediaPlayer.getCurrentPosition(), 1.0f).build();
             mediaSessionCompat.setPlaybackState(playbackStateCompat);
             showNotification(true);
         }
