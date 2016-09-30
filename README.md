@@ -4,7 +4,7 @@
 
 1. DiffUtilSample——使用DiffUtil高效更新RecyclerView。
 
-2. MediaSessionCompatSample——使用MediaSessionCompat框架播放音乐。
+2. MediaSessionCompatSample——使用MediaSessionCompat框架播放音乐，包括Activity、Notification、耳机控制。
 
 3. BottomSheetSample——Design包中bottomSheet的应用，代码来源[Android-Bottom-Sheets](https://github.com/tutsplus/Android-BottomSheets)。
 
