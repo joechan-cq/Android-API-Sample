@@ -36,7 +36,7 @@ public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
     private MusicBinder binder = new MusicBinder();
     private MediaSessionCompat mediaSessionCompat;
-    private String[] mp3s = new String[]{"http://yinyueshiting.baidu.com/data2/music/49d23c00a69f913ff41bbf0f4ef9af44/261813937/261813937.mp3?xcode=3c8806142c92ccd68e84979b09d702df",
+    private String[] mp3s = new String[]{"http://zhangmenshiting.baidu.com/data2/music/124574160/124574160.mp3?xcode=3234a6eac0f1caa931189f16455400eb",
             "http://yinyueshiting.baidu.com/data2/music/a91a082fa3b5f11553c4343002ff54b7/269187740/269187740.mp3?xcode=3c8806142c92ccd68e84979b09d702df",
             "http://yinyueshiting.baidu.com/data2/music/4708c0bda6938501e19d89b186573f13/268028134/268028134.mp3?xcode=3c8806142c92ccd68e84979b09d702df"};
 
