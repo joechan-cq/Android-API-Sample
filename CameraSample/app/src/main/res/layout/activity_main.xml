@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="500dp"
+            android:layout_height="500dp"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/test" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp"
+            tools:context="com.joe.camera.MainActivity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="rotateX" />
+
+                <TextView
+                    android:id="@+id/tv_rotate_x"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_rotate_x"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="rotateY" />
+
+                <TextView
+                    android:id="@+id/tv_rotate_y"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_rotate_y"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="rotateZ" />
+
+                <TextView
+                    android:id="@+id/tv_rotate_z"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_rotate_z"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="translateX" />
+
+                <TextView
+                    android:id="@+id/tv_translate_x"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_translate_x"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="translateY" />
+
+                <TextView
+                    android:id="@+id/tv_translate_y"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_translate_y"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="translateZ" />
+
+                <TextView
+                    android:id="@+id/tv_translate_z"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_translate_z"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="skewX" />
+
+                <TextView
+                    android:id="@+id/tv_skew_x"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_skew_x"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="skewY" />
+
+                <TextView
+                    android:id="@+id/tv_skew_y"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+
+                <SeekBar
+                    android:id="@+id/sb_skew_y"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="100" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+</ScrollView>

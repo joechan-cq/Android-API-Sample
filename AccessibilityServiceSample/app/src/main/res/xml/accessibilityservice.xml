@@ -5,4 +5,4 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/auto_install"
     android:notificationTimeout="100"
-    android:packageNames="com.android.packageinstaller" />
+    android:packageNames="com.android.settings" />
