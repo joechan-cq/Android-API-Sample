@@ -65,43 +65,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-            switch (seekBar.getId()) {
-                case R.id.sb_rotate_x:
-                    rotateX = progress;
-                    rotateXTv.setText(String.valueOf(rotateX));
-                    break;
-                case R.id.sb_rotate_y:
-                    rotateY = progress;
-                    rotateYTv.setText(String.valueOf(rotateY));
-                    break;
-                case R.id.sb_rotate_z:
-                    rotateZ = progress;
-                    rotateZTv.setText(String.valueOf(rotateZ));
-                    break;
-                case R.id.sb_translate_x:
-                    translateX = progress - 100;
-                    translateXTv.setText(String.valueOf(translateX));
-                    break;
-                case R.id.sb_translate_y:
-                    translateY = progress - 100;
-                    translateYTv.setText(String.valueOf(translateY));
-                    break;
-                case R.id.sb_translate_z:
-                    translateZ = progress - 100;
-                    translateZTv.setText(String.valueOf(translateZ));
-                    break;
-                case R.id.sb_skew_x:
-                    skewX = (progress - 100) / 100f;
-                    skewXTv.setText(String.valueOf(skewX));
-                    break;
-                case R.id.sb_skew_y:
-                    skewY = (progress - 100) / 100f;
-                    skewYTv.setText(String.valueOf(skewY));
-                    break;
-            }
-            refreshImage();
-        }
     }
 
     @Override
@@ -111,7 +74,42 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        int progress = seekBar.getProgress();
+        switch (seekBar.getId()) {
+            case R.id.sb_rotate_x:
+                rotateX = progress;
+                rotateXTv.setText(String.valueOf(rotateX));
+                break;
+            case R.id.sb_rotate_y:
+                rotateY = progress;
+                rotateYTv.setText(String.valueOf(rotateY));
+                break;
+            case R.id.sb_rotate_z:
+                rotateZ = progress;
+                rotateZTv.setText(String.valueOf(rotateZ));
+                break;
+            case R.id.sb_translate_x:
+                translateX = progress - 100;
+                translateXTv.setText(String.valueOf(translateX));
+                break;
+            case R.id.sb_translate_y:
+                translateY = progress - 100;
+                translateYTv.setText(String.valueOf(translateY));
+                break;
+            case R.id.sb_translate_z:
+                translateZ = progress - 100;
+                translateZTv.setText(String.valueOf(translateZ));
+                break;
+            case R.id.sb_skew_x:
+                skewX = (progress - 100) / 100f;
+                skewXTv.setText(String.valueOf(skewX));
+                break;
+            case R.id.sb_skew_y:
+                skewY = (progress - 100) / 100f;
+                skewYTv.setText(String.valueOf(skewY));
+                break;
+        }
+        refreshImage();
     }
 
     private void refreshImage() {
