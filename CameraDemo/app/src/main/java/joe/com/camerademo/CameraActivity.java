@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.TextureView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -33,6 +35,9 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.camera);
         initUI();
 
@@ -48,7 +53,6 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onOrientationChanged(int orientation) {
                 currentOrientation = orientation;
-                Log.d("CameraActivity", "onOrientationChanged: " + currentOrientation);
             }
         };
     }
@@ -168,6 +172,9 @@ public class CameraActivity extends AppCompatActivity {
      */
     private void takePicture() {
         if (camera != null) {
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setRotation(CameraUtils.correctOrientation(cameraId, currentOrientation));
+            camera.setParameters(parameters);
             camera.takePicture(new Camera.ShutterCallback() {
                 @Override
                 public void onShutter() {

@@ -3,6 +3,7 @@ package joe.com.camerademo;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 
 import java.util.List;
@@ -13,11 +14,10 @@ import java.util.List;
  */
 public class CameraUtils {
     /**
-     * 修正camera预览的角度问题
+     * 修正camera预览的角度问题，代码出自{@link Camera#setDisplayOrientation(int)}注释
      */
     public static void setCameraDisplayOrientation(Activity activity, int cameraId, Camera camera) {
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
+        Camera.CameraInfo info = new Camera.CameraInfo();
         android.hardware.Camera.getCameraInfo(cameraId, info);
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int degrees = 0;
@@ -61,7 +61,7 @@ public class CameraUtils {
         List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
         float proportion;
         for (Camera.Size size : sizes) {
-            Log.d("CameraUtils", "support preview size: " + size.width + "*" + size.height);
+            Log.d("CameraUtils", "supportPreviewSize: " + size.width + "*" + size.height);
             proportion = size.width / (size.height * 1f);
             if (preview_proportion == proportion) {
                 if (size.width >= preview_width && size.height >= preview_height) {
@@ -100,6 +100,15 @@ public class CameraUtils {
         return getMostSuitablePictureSize(camera, preview_width, preview_height, false);
     }
 
+    /**
+     * 找到与preview最适合的pictureSize
+     *
+     * @param camera         camera实例
+     * @param preview_width  preview宽度
+     * @param preview_height preview高度
+     * @param findMax        是否寻找比例相同且尺寸最大的
+     * @return 最合适的尺寸
+     */
     public static Camera.Size getMostSuitablePictureSize(Camera camera, int preview_width, int preview_height,
                                                          boolean findMax) {
         Camera.Size result = null;
@@ -108,7 +117,7 @@ public class CameraUtils {
         List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
         float proportion;
         for (Camera.Size size : sizes) {
-            Log.d("CameraUtils", "supportPictureSize: " + size.width + "  " + size.height);
+            Log.d("CameraUtils", "supportPictureSize: " + size.width + "*" + size.height);
             proportion = size.width / (size.height * 1f);
             if (size.width >= preview_width && size.height >= preview_height) {
                 if (preview_proportion == proportion) {
@@ -147,13 +156,25 @@ public class CameraUtils {
     }
 
     /**
-     * 修正传感器的值
+     * 调整Camera输出的图像角度,该代码出自{@link android.hardware.Camera.Parameters#setRotation(int)}上的注释
      *
-     * @param orientation 传感器的值
-     * @return 修正后的数据，值只能是0，90，180，270
+     * @param cameraId    cameraId
+     * @param orientation 传感器输出的角度值
+     * @return 修正后的角度
      */
-    public static int correctOrientation(int orientation) {
-        int result = 0;
-        return result;
+    public static int correctOrientation(int cameraId, int orientation) {
+        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
+            return 0;
+        }
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
+        orientation = (orientation + 45) / 90 * 90;
+        int rotation;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            rotation = (info.orientation - orientation + 360) % 360;
+        } else {  // back-facing camera
+            rotation = (info.orientation + orientation) % 360;
+        }
+        return rotation;
     }
 }

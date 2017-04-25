@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity"/>
+        <activity
+            android:name=".CameraActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Camera2Activity"/>
         <activity android:name=".PictureActivity"/>
     </application>
