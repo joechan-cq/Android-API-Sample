@@ -135,7 +135,7 @@ public class CameraActivity extends AppCompatActivity {
             Log.d("CameraActivity", "preSize: " + size.width + "  " + size.height);
 
             parameters.setPictureFormat(ImageFormat.JPEG);
-            Camera.Size picSize = CameraUtils.getMostSuitablePictureSize(camera, size.width, size.height);
+            Camera.Size picSize = CameraUtils.getMostSuitablePictureSize(camera, size.height, size.width);
             parameters.setPictureSize(picSize.width, picSize.height);
             Log.d("CameraActivity", "picSize: " + picSize.width + "  " + picSize.height);
 
@@ -190,6 +190,7 @@ public class CameraActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     /**

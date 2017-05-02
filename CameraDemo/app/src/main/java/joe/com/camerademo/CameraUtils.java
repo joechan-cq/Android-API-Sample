@@ -89,6 +89,7 @@ public class CameraUtils {
                         } else {
                             result = size;
                         }
+                        minOffset = Math.abs(preview_proportion - proportion);
                     }
                 }
             }
@@ -148,6 +149,7 @@ public class CameraUtils {
                         } else {
                             result = size;
                         }
+                        minOffset = Math.abs(preview_proportion - proportion);
                     }
                 }
             }
