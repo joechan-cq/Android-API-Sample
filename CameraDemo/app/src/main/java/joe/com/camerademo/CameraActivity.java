@@ -135,7 +135,7 @@ public class CameraActivity extends AppCompatActivity {
             Log.d("CameraActivity", "preSize: " + size.width + "  " + size.height);
 
             parameters.setPictureFormat(ImageFormat.JPEG);
-            Camera.Size picSize = CameraUtils.getMostSuitablePictureSize(camera, size.height, size.width);
+            Camera.Size picSize = CameraUtils.getMostSuitablePictureSize(camera, size.width, size.height);
             parameters.setPictureSize(picSize.width, picSize.height);
             Log.d("CameraActivity", "picSize: " + picSize.width + "  " + picSize.height);
 
@@ -184,7 +184,6 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void onPictureTaken(byte[] jpegData, Camera camera) {
                     PictureActivity.data = jpegData;
-                    PictureActivity.orientation = currentOrientation;
                     Intent intent = new Intent(CameraActivity.this, PictureActivity.class);
                     startActivity(intent);
                 }

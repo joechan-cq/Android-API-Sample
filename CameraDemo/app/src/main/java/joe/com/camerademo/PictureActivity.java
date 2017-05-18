@@ -16,7 +16,6 @@ import android.widget.Toast;
 public class PictureActivity extends AppCompatActivity {
     private ImageView img;
     public static byte[] data;
-    public static int orientation;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

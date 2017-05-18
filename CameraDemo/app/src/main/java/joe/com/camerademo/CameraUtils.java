@@ -2,7 +2,11 @@ package joe.com.camerademo;
 
 import android.app.Activity;
 import android.hardware.Camera;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 
@@ -13,6 +17,7 @@ import java.util.List;
  * Created by joe on 2017/4/25.
  */
 public class CameraUtils {
+
     /**
      * 修正camera预览的角度问题，代码出自{@link Camera#setDisplayOrientation(int)}注释
      */
@@ -61,10 +66,13 @@ public class CameraUtils {
         List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
         float proportion;
         for (Camera.Size size : sizes) {
-            Log.d("CameraUtils", "supportPreviewSize: " + size.width + "*" + size.height);
+            Log.d("CameraUtils", "supportPreviewSize: " + size.width + "*" + size.height + " " + (size.width / (1f *
+                    size.height)));
+        }
+        for (Camera.Size size : sizes) {
             proportion = size.width / (size.height * 1f);
             if (preview_proportion == proportion) {
-                if (size.width >= preview_width && size.height >= preview_height) {
+                if (size.width >= preview_width / 2 && size.height >= preview_height / 2) {
                     if (result != null) {
                         if (result.width < size.width) {
                             result = size;
@@ -93,6 +101,23 @@ public class CameraUtils {
                     }
                 }
             }
+            if (result == null) {
+                for (Camera.Size size : sizes) {
+                    proportion = size.width / (size.height * 1f);
+                    if (size.width >= preview_width / 2 && size.height >= preview_height / 2) {
+                        if (minOffset > Math.abs(preview_proportion - proportion)) {
+                            if (result != null) {
+                                if (result.width < size.width) {
+                                    result = size;
+                                }
+                            } else {
+                                result = size;
+                            }
+                            minOffset = Math.abs(preview_proportion - proportion);
+                        }
+                    }
+                }
+            }
         }
         return result;
     }
@@ -118,9 +143,12 @@ public class CameraUtils {
         List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
         float proportion;
         for (Camera.Size size : sizes) {
-            Log.d("CameraUtils", "supportPictureSize: " + size.width + "*" + size.height);
+            Log.d("CameraUtils", "supportPictureSize: " + size.width + "*" + size.height + " " + (size.width / (1f *
+                    size.height)));
+        }
+        for (Camera.Size size : sizes) {
             proportion = size.width / (size.height * 1f);
-            if (size.width >= preview_width && size.height >= preview_height) {
+            if (size.width >= preview_width / 2 && size.height >= preview_height / 2) {
                 if (preview_proportion == proportion) {
                     if (result != null) {
                         if (result.width < size.width) {
@@ -178,5 +206,155 @@ public class CameraUtils {
             rotation = (info.orientation + orientation) % 360;
         }
         return rotation;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Size getMostSuitablePreviewSize(Size[] supportSizes, int preview_width, int preview_height) {
+        float preview_proportion = preview_width / (1f * preview_height);
+        Size result = null;
+        float proportion;
+        for (Size size : supportSizes) {
+            Log.d("CameraUtils", "supportPreviewSize: " + size.getWidth() + " " + size.getHeight());
+        }
+        for (Size size : supportSizes) {
+            proportion = size.getWidth() / (size.getHeight() * 1f);
+            if (preview_proportion == proportion) {
+                if (size.getWidth() >= preview_width / 2 && size.getHeight() >= preview_height / 2) {
+                    if (result != null) {
+                        if (result.getWidth() < size.getWidth()) {
+                            result = size;
+                        }
+                    } else {
+                        result = size;
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            //没有找到比例相等的previewSize，那就找比例最接近的previewSize
+            float minOffset = Float.MAX_VALUE;
+            for (Size size : supportSizes) {
+                proportion = size.getWidth() / (size.getHeight() * 1f);
+                if (size.getWidth() >= preview_width && size.getHeight() >= preview_height) {
+                    if (minOffset > Math.abs(preview_proportion - proportion)) {
+                        if (result != null) {
+                            if (result.getWidth() < size.getWidth()) {
+                                result = size;
+                            }
+                        } else {
+                            result = size;
+                        }
+                        minOffset = Math.abs(preview_proportion - proportion);
+                    }
+                }
+            }
+            if (result == null) {
+                for (Size size : supportSizes) {
+                    proportion = size.getWidth() / (size.getHeight() * 1f);
+                    if (size.getWidth() >= preview_width / 2 && size.getHeight() >= preview_height / 2) {
+                        if (minOffset > Math.abs(preview_proportion - proportion)) {
+                            if (result != null) {
+                                if (result.getWidth() < size.getWidth()) {
+                                    result = size;
+                                }
+                            } else {
+                                result = size;
+                            }
+                            minOffset = Math.abs(preview_proportion - proportion);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Size getMostSuitablePictureSize(Size[] supportSizes, int expectWidth, int expectHeight, boolean
+            findMax) {
+        Size result = null;
+        float preview_proportion, proportion;
+        preview_proportion = expectWidth / (1f * expectHeight);
+        for (Size size : supportSizes) {
+            Log.d("CameraUtils", "supportPictureSize: " + size.getWidth() + "*" + size.getHeight() + " " + (size
+                    .getWidth() / (1f * size.getHeight())));
+        }
+        for (Size size : supportSizes) {
+            proportion = size.getWidth() / (size.getHeight() * 1f);
+            if (preview_proportion == proportion) {
+                if (size.getWidth() >= expectWidth / 2 && size.getHeight() >= expectHeight / 2) {
+                    if (result != null) {
+                        if (result.getWidth() < size.getWidth()) {
+                            result = size;
+                        }
+                    } else {
+                        result = size;
+                        if (!findMax) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            //没有找到比例相等的pictureSize，那就找比例最接近的pictureSize
+            float minOffset = Float.MAX_VALUE;
+            for (Size size : supportSizes) {
+                proportion = size.getWidth() / (size.getHeight() * 1f);
+                if (size.getWidth() >= expectWidth && size.getHeight() >= expectHeight) {
+                    if (minOffset > Math.abs(preview_proportion - proportion)) {
+                        if (result != null) {
+                            if (result.getWidth() < size.getWidth()) {
+                                result = size;
+                            }
+                        } else {
+                            result = size;
+                            if (!findMax) {
+                                break;
+                            }
+                        }
+                        minOffset = Math.abs(preview_proportion - proportion);
+                    }
+                }
+            }
+            if (result == null) {
+                for (Size size : supportSizes) {
+                    proportion = size.getWidth() / (size.getHeight() * 1f);
+                    if (size.getWidth() >= expectWidth / 2 && size.getHeight() >= expectHeight / 2) {
+                        if (minOffset > Math.abs(preview_proportion - proportion)) {
+                            if (result != null) {
+                                if (result.getWidth() < size.getWidth()) {
+                                    result = size;
+                                }
+                            } else {
+                                result = size;
+                                if (!findMax) {
+                                    break;
+                                }
+                            }
+                            minOffset = Math.abs(preview_proportion - proportion);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+
+    public static int getOrientation(int mSensorOrientation, int rotation) {
+        // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
+        // We have to take that into account and rotate JPEG properly.
+        // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
+        // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
+        return (ORIENTATIONS.get(rotation) + mSensorOrientation + 270) % 360;
     }
 }
